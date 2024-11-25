@@ -4,7 +4,7 @@
 ---
 
 ## Overview
-This document explains the workflow for implementing **Provider-Driven Mocks** using DAF as the provider team. The provider-driven mocks approach centralizes mock configuration and management to ensure consistency across all consumers. The process involves creating WireMock configurations, generating Docker images, and maintaining a centralized environment for API mock integration.
+This document explains the workflow for implementing **Provider-Driven Mocks** using `DAF` as the provider team. The provider-driven mocks approach centralizes mock configuration and management to ensure consistency across all consumers. The process involves creating `WireMock` configurations, generating Docker images, and maintaining a centralized environment for API mock integration.
 
 ---
 
@@ -17,46 +17,27 @@ This document explains the workflow for implementing **Provider-Driven Mocks** u
 
 2. **Asset Repository**:
    - Hosts the WireMock configuration files (`request.json`, `response.json`, etc.) for each mock endpoint.  
-   - Is used to generate a **Docker image** containing all mock configurations.  
+   - will optionally* generate a **Docker image** containing all mock configurations.  
 
 3. **Docker Image**:
-   - A containerized version of WireMock using the configuration files.  
+   - A containerized version of WireMock using the configuration files for each asset team.  
    - Provides a ready-to-use stub response environment, mimicking the provider's API behavior.
 
-4. **Central Maintenance Team**:
+4. **SV Central Maintenance Team**:
    - Downloads and manages Docker images for all provider teams (e.g., DAF).  
-   - Creates a pipeline to spin up Docker containers for each mock API using WireMock.  
+   - Creates a harness/jenkins pipeline to spin up Docker containers for each mock API using WireMock.  
    - Provides access to the mock containers for consumer teams.
 
-5. **Consumer Team**:
+5. **Consumer Team( such as mini app personal loan)**:
    - Uses the centralized Docker containers to integrate with provider-driven mocks.  
-   - Replaces any consumer-driven mocks with provider-maintained stubs for consistency.  
+   - Replaces any consumer-driven mocks(which is currently in mini app code base) with provider-maintained stubs for consistency.  
 
 ---
 
 ## Sequence Diagram
 
-```mermaid
-sequenceDiagram
-    participant DAF as Provider Team (DAF)
-    participant AssetRepo as Asset Repository
-    participant DockerImg as Docker Image
-    participant CentralTeam as Central Maintenance Team
-    participant Consumer as Consumer Team
+<img width="1156" alt="image" src="https://github.com/user-attachments/assets/b5d56dc9-7c06-4a13-b450-110a882cddcc">
 
-    DAF->>AssetRepo: Create APIs and test endpoints
-    DAF->>AssetRepo: Add WireMock configurations (request/response)
-    DAF->>AssetRepo: Commit updated mocks to main branch
-
-    AssetRepo->>DockerImg: Generate Docker image from repo
-    DockerImg->>CentralTeam: Provide containerized image with mocks
-
-    CentralTeam->>CentralTeam: Spin up Docker containers using WireMock
-    CentralTeam->>Consumer: Provide access to WireMock instances
-
-    Consumer->>DockerImg: Use WireMock containers for local API stubs
-    Consumer->>CentralTeam: Integrate and test using centralized mocks
-```
 
 ---
 
@@ -75,7 +56,7 @@ sequenceDiagram
 
 ---
 
-## How to Use the Docker Image
+## How to Use the Docker Image to spin up provider driven mock LOCALLY
 1. **Download the Docker Image**:  
    The central maintenance team provides the Docker image for the required provider (e.g., DAF).  
 
